@@ -5,7 +5,7 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js'
 import { Extension, gettext as _ } from
     'resource:///org/gnome/shell/extensions/extension.js'
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js'
-import { setLogging, journal } from './utils.js'
+import { setLogging, setLogFn, journal } from './utils.js'
 import { getExtensionCacheDir, noCache, fileBasedCache } from './cache.js'
 
 const INTERFACE_SCHEMA = 'org.gnome.desktop.interface'
@@ -172,7 +172,7 @@ async function runColorThief(imagePath, extensionPath) {
         }
         return palette
     } catch (e) {
-        console.error(e)
+        journal(e, true)
         return Array(5).fill([0, 0, 0])
     }
 }
@@ -187,7 +187,7 @@ async function getBackgroundPalette(extensionPath, backgroundPath) {
 
         return [dominantColourTuple, highlightColourTuple]
     } catch (e) {
-        console.error(e)
+        journal(e, true)
         return Array(2).fill([0, 0, 0])
     }
 }
@@ -210,7 +210,7 @@ async function applyClosestAccent(
     try {
         bytes = backgroundFile.load_bytes(null)[0];
     } catch(e) {
-        console.error(e)
+        journal(e, true)
         onIncompatibleImg()
     }
 
@@ -279,6 +279,19 @@ async function applyClosestAccent(
 
 export default class AutoAccentColourExtension extends Extension {
     enable() {
+        if (this.getLogger) {
+            // Use ExtensionBase's logger class on GNOME 48+
+            const logger = this.getLogger()
+
+            setLogFn(function(msg, error) {
+                if (error) {
+                    logger.error(msg)
+                } else {
+                    logger.log(msg)
+                }
+            })
+        }
+
         /* Hue values are:
         0 = Red
         60 = Yellow
@@ -623,6 +636,8 @@ export default class AutoAccentColourExtension extends Extension {
         this._interfaceSettings = null
         this._backgroundSettings = null
         this._backgroundFileMonitor = null
+
+        setLogFn(null)
     }
 }
 
