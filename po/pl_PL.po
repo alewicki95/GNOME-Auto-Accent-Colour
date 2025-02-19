@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the Auto Accent Colour package.
 # Adam Lewicki <a.lewicki95@gmail.com>, 2025.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
