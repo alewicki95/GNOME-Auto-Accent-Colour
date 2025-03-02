@@ -160,7 +160,8 @@ msgstr ""
 msgid ""
 "For creating the Quantize JavaScript module, used by ColorThief for colour "
 "quantization"
-msgstr ""
+msgstr "Za stworzenie modułu JavaScript Quantize, używanego przez ColorThief do "
+"kwantyzacji kolorów"
 
 #: prefs.js:258
 msgid "Project Repository"
